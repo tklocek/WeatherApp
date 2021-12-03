@@ -20,6 +20,13 @@ struct MainWeatherViewModel {
         return weatherIcon[weather.icon, default: DEFAULT_ICON_IF_ERROR]
     }
   
+    var lat: String {
+        return String(item.coord.lat)
+    }
+    var lon: String {
+        return String(item.coord.lon)
+    }
+
     init(item: CurrentWeatherResponse) {
         self.item = item
     }

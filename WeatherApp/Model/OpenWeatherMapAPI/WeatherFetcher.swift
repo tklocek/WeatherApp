@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 protocol WeatherFetchable{
-    func weatherForecast(forCity city: String) -> AnyPublisher<ForecastResponse, WeatherError>
+    func weatherForecast(forLat lat: String, andLon lon: String) -> AnyPublisher<ForecastResponse, WeatherError>
     func currentWeather(forCiry city: String) -> AnyPublisher<CurrentWeatherResponse, WeatherError>
 }
 
@@ -26,20 +26,34 @@ class WeatherFetcher {
 private extension WeatherFetcher {
     struct OpenWeatherAPI {
         static let key = "3c256165dbbffae78e0d13c28bf5dd38"
-        static let sheme = "https"
+        static let scheme = "https"
         static let host = "api.openweathermap.org"
         static let path = "/data/2.5"
     }
     
-    func makeForecastComponents() {
+    func makeForecastComponents(forLat lat: String, andLon lon: String) -> URLComponents {
+        var components = URLComponents()
+        components.scheme = OpenWeatherAPI.scheme
+        components.host = OpenWeatherAPI.host
+        components.path = OpenWeatherAPI.path + "/onecall"
         
+        components.queryItems = [
+          URLQueryItem(name: "lat", value: lat),
+          URLQueryItem(name: "lon", value: lon),
+          URLQueryItem(name: "mode", value: "json"),
+          URLQueryItem(name: "units", value: "metric"),
+          URLQueryItem(name: "exclude", value: "minutely,alerts,hourly,current"),
+          URLQueryItem(name: "appid", value: OpenWeatherAPI.key)
+        ]
         
-    }
+        return components
+      }
+    
     
     func makeCurrentWeatherComponenst(withCity city: String) -> URLComponents {
         var components = URLComponents()
         
-        components.scheme = OpenWeatherAPI.sheme
+        components.scheme = OpenWeatherAPI.scheme
         components.host = OpenWeatherAPI.host
         components.path = OpenWeatherAPI.path + "/weather"
         
@@ -57,8 +71,8 @@ private extension WeatherFetcher {
 
 //MARK: WeatherFetchable
 extension WeatherFetcher: WeatherFetchable {
-    func weatherForecast(forCity city: String) -> AnyPublisher<ForecastResponse, WeatherError> {
-        let components = makeCurrentWeatherComponenst(withCity: city)
+    func weatherForecast(forLat lat: String, andLon lon: String) -> AnyPublisher<ForecastResponse, WeatherError> {
+        let components = makeForecastComponents(forLat: lat, andLon: lon)
         return forecast(with: components)
     }
     

@@ -44,7 +44,16 @@ class CurrentWeatherViewModel: ObservableObject, Identifiable {
 
 
 extension CurrentWeatherViewModel {
-  var chooseCityView: some View {
-      return CurrentWeatherBuilder.makeChooseCityView (currentViewModel: self)
+    var chooseCityView: some View {
+      return CurrentWeatherBuilder.makeChooseCityView(currentViewModel: self)
   }
+    var chooseForecastView: some View {
+        guard let dataSource = dataSource else { return AnyView(errorLoading) }
+        
+        return AnyView(CurrentWeatherBuilder.makeForecastView(withCity: city, lat: dataSource.lat, lon: dataSource.lon, weatherFetcher: weatherFecher))
+    }
+    
+    var errorLoading: some View {
+      Text("Loading forecast error")
+    }
 }

@@ -8,13 +8,34 @@
 import SwiftUI
 
 struct ForecastView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    @ObservedObject var viewModel: ForecastViewModel
+    
+    init(viewModel: ForecastViewModel) {
+        self.viewModel = viewModel
     }
-}
-
-struct ForecastView_Previews: PreviewProvider {
-    static var previews: some View {
-        ForecastView()
+    
+    
+    var body: some View {
+        ZStack {
+            BackgroundView(topColor: Color("lightBackground"), bottomColor: Color("darkBackground"))
+            VStack{
+                HStack {
+                    if viewModel.dataSource.isEmpty {
+                      Text("No results")
+                        Button("Refresh data") {
+                            viewModel.refresh()
+                        }
+                    } else {
+                        ForEach(viewModel.dataSource) { result in
+                                ForecastDailyView(viewModel: result)
+                        }
+                    }
+                    
+                }
+                .navigationTitle(viewModel.city)
+                .onAppear(perform: viewModel.refresh)
+            }
+        }
+        
     }
 }

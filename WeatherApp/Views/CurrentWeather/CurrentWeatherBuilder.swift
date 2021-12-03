@@ -8,10 +8,10 @@
 import SwiftUI
 
 enum CurrentWeatherBuilder {
-//  static func makeForecastView(withCity city: String, weatherFetcher: WeatherFetchable ) -> some View {
-//    let viewModel = ForecastViewModel(city: city, weatherFetcher: weatherFetcher)
-//    return ForecastView(viewModel: viewModel)
-//  }
+    static func makeForecastView(withCity city: String, lat: String, lon: String, weatherFetcher: WeatherFetchable ) -> some View {
+        let viewModel = ForecastViewModel(city: city, lat: lat, lon: lon, weatherFecher: weatherFetcher)
+    return ForecastView(viewModel: viewModel)
+  }
     static func makeChooseCityView( currentViewModel: CurrentWeatherViewModel ) -> some View {
         let viewModel = ChooseCityViewModel(currentWeatherViewModel: currentViewModel)
       return ChooseCityView(viewModel: viewModel)
